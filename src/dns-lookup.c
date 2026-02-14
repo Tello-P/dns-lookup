@@ -7,14 +7,17 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-int main()
+int main(int argc, char *argv[])
 {
+  if (argc != 2){
+    printf("Usage: dns <hostname>");
+    return 1;}
 
-  printf("Iniciando DNS Lookup...\n");
+  printf("Starting DNS Lookup for %s...\n", argv[1]);
   // man getaddrinfo
   struct addrinfo *presult;
-  char *node = "www.google.com";
-  char *service = "http";
+  char *node = argv[1];
+  char *service = NULL;
   struct addrinfo hints;
 
   memset(&hints, 0, sizeof(struct addrinfo));
@@ -38,7 +41,19 @@ int main()
   char ipstr[INET6_ADDRSTRLEN];
 
     const char *ip_addr = inet_ntop(rp->ai_family, rp->ai_addr, ipstr, sizeof(ipstr));
-    printf("\tDireccion: %s\n", ip_addr);
+    printf("\tAddress: %s\n", ip_addr);
+
+    char *protocol = malloc(sizeof(char)*10);
+    switch (rp->ai_protocol) {
+      case 0: protocol= "IP";break;
+      case 1: protocol = "ICMP";break;
+      case 6: protocol = "TCP";break;
+      case 17: protocol = "UDP";break;
+      default: sprintf(protocol, "%d",rp->ai_protocol);
+      break;
+    }
+    printf("\tService: %s\n", protocol);
+    
   }
   freeaddrinfo(presult);
 
