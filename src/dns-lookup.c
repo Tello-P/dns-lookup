@@ -30,22 +30,18 @@ int main(int argc, char *argv[])
   hints.ai_addr = NULL;
   hints.ai_next = NULL;
 
-
-
-
   int result = getaddrinfo(node, service, &hints, &presult);
   printf("%d\n", result);
   printf("DNS LOOKUP para %s\n", node);
   for (struct addrinfo *rp = presult; rp != NULL; rp = rp->ai_next){
     printf("%s\n", rp->ai_family == AF_INET ? "IPv4" : "IPv6");
-    
 
   char ipstr[INET6_ADDRSTRLEN];
 
-    void *src = rp->ai_family == AF_INET ? (void *) &((struct sockaddr_in *)
-      rp->ai_addr)->sin_addr : (void *)  &((struct sockaddr_in6 *) 
-      rp->ai_addr)->sin6_addr;
-    
+    void *src = rp->ai_family == 
+      AF_INET ?
+      (void *) &((struct sockaddr_in *) rp->ai_addr)->sin_addr :
+      (void *) &((struct sockaddr_in6 *) rp->ai_addr)->sin6_addr;
 
     inet_ntop(rp->ai_addr->sa_family, src, ipstr, sizeof(ipstr));
     printf("\tAddress: %s\n", ipstr);
@@ -60,9 +56,7 @@ int main(int argc, char *argv[])
       break;
     }
     printf("\tService: %s\n", protocol);
-    
   }
   freeaddrinfo(presult);
-
   return 0;
 }
