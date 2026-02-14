@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 
 int main(int argc, char *argv[])
 {
@@ -38,10 +39,16 @@ int main(int argc, char *argv[])
   for (struct addrinfo *rp = presult; rp != NULL; rp = rp->ai_next){
     printf("%s\n", rp->ai_family == AF_INET ? "IPv4" : "IPv6");
     
+
   char ipstr[INET6_ADDRSTRLEN];
 
-    const char *ip_addr = inet_ntop(rp->ai_family, rp->ai_addr, ipstr, sizeof(ipstr));
-    printf("\tAddress: %s\n", ip_addr);
+    void *src = rp->ai_family == AF_INET ? (void *) &((struct sockaddr_in *)
+      rp->ai_addr)->sin_addr : (void *)  &((struct sockaddr_in6 *) 
+      rp->ai_addr)->sin6_addr;
+    
+
+    inet_ntop(rp->ai_addr->sa_family, src, ipstr, sizeof(ipstr));
+    printf("\tAddress: %s\n", ipstr);
 
     char *protocol = malloc(sizeof(char)*10);
     switch (rp->ai_protocol) {
