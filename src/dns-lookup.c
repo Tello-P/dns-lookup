@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
   int result = getaddrinfo(node, service, &hints, &presult);
   printf("%d\n", result);
-  printf("DNS LOOKUP para %s\n", node);
+  printf("DNS LOOKUP for %s\n", node);
   for (struct addrinfo *rp = presult; rp != NULL; rp = rp->ai_next){
     printf("%s\n", rp->ai_family == AF_INET ? "IPv4" : "IPv6");
 
